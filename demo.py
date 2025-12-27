@@ -259,7 +259,7 @@ if st.session_state.analysis_done:
             except Exception as e:
                 st.error(f"Error analyzing: {e}")
     
-    if st.button("Start New Simulation", icon=":material/restart_alt:"):
+    if st.button("Start New Simulation", icon=":material/playlist_add:"):
         st.session_state.messages = []
         st.session_state.interview_active = False
         st.session_state.generated_persona = ""
