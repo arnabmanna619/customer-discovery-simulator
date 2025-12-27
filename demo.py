@@ -42,7 +42,7 @@ with st.sidebar:
         
     else: # Gemini (Test)
         st.success("Using a Free Test Key. This has limits.")
-        api_key = "AIzaSyDiAEvsqAu5DLuNPoiPJEgr2ZXar3vfFcg" # The Hardcoded Key
+        api_key = st.secrets.get("GEMINI_TEST_API_KEY", "")
         base_url = "https://generativelanguage.googleapis.com/v1beta/openai/"
         model_name = "gemini-3-flash-preview"
 
