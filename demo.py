@@ -259,7 +259,6 @@ if st.session_state.analysis_done:
 
                 # Display cached feedback for download
                 if st.session_state.feedback_text:
-                    st.markdown(st.session_state.feedback_text)
                     st.download_button("Download Feedback", data=st.session_state.feedback_text, file_name="interview_feedback.txt", icon=":material/download:")
                 
             except Exception as e:
