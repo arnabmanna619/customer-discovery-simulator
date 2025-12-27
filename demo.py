@@ -63,7 +63,7 @@ with st.sidebar:
 
 # --- MAIN PAGE: HEADER ---
 st.title("🕵️ Customer Discovery Simulator")
-st.markdown("Practice your interview skills on an AI persona before talking to real humans.")
+st.markdown("Sharpen your customer discovery skills before talking to real customers.")
 
 def escape_dollars(stream):
     for event in stream:
@@ -135,13 +135,9 @@ if not st.session_state.interview_active:
         st.success("**Generated Persona:**\n\n" + st.session_state.generated_persona)
         
         # User decides: Use this fancy persona OR just the raw inputs?
-        persona_choice = st.radio(
-            "Which persona context do you want to use?",
-            ["Use the Generated Persona Details", "Ignore and use my Raw Inputs only"],
-            index=0 # Default to using the generated one since they asked for it
-        )
+        persona_choice = st.radio("Which persona context do you want to use?", ["Use Generated Persona", "Use Raw User Inputs Only"], index=0, horizontal=True)
         
-        if persona_choice == "Use the Generated Persona Details":
+        if persona_choice == "Use Generated Persona":
             use_generated_persona = True
 
     st.markdown("---")
