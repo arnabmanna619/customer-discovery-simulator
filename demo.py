@@ -221,8 +221,11 @@ if st.session_state.interview_active and not st.session_state.analysis_done:
             st.rerun()
 
 # --- SECTION 3: ANALYSIS & FEEDBACK ---
+if "feedback_text" not in st.session_state:
+    st.session_state.feedback_text = ""
+
 if st.session_state.analysis_done:
-    st.subheader("📝 Professor's Feedback")
+    st.subheader("📝 AI Professor's Feedback")
     
     # Combine the chat history into a string for the LLM to read
     transcript = "\n".join([f"{m['role'].upper()}: {m['content']}" for m in st.session_state.messages if m['role'] != 'system'])
@@ -241,7 +244,7 @@ if st.session_state.analysis_done:
     4. **Grading:** Give a score out of 10 for unbiased interviewing technique.
     """
     
-    if api_key:
+    if api_key and not st.session_state.feedback_text:
         with st.spinner("Analyzing your interview technique..."):
             try:
                 client = OpenAI(api_key=api_key, base_url=base_url)
@@ -252,9 +255,12 @@ if st.session_state.analysis_done:
                     stream=True
                 )
                 feedback = st.write_stream(escape_dollars(stream))
-                
-                # Download Button for the report
-                st.download_button("Download Feedback", data=feedback, file_name="interview_feedback.txt", icon=":material/download:")
+                st.session_state.feedback_text = feedback
+
+                # Display cached feedback for download
+                if st.session_state.feedback_text:
+                    st.markdown(st.session_state.feedback_text)
+                    st.download_button("Download Feedback", data=st.session_state.feedback_text, file_name="interview_feedback.txt", icon=":material/download:")
                 
             except Exception as e:
                 st.error(f"Error analyzing: {e}")
