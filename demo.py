@@ -4,7 +4,7 @@ from openai import OpenAI
 # ======================================================================================
 # PAGE CONFIGURATION
 # ======================================================================================
-st.set_page_config(page_title="Interview Lab: Customer Discovery", page_icon="🕵️", layout="wide")
+st.set_page_config(page_title="Customer Discovery Simulator", page_icon="🕵️", layout="wide")
 
 # ======================================================================================
 # CONSTANTS
