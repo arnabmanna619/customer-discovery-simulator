@@ -19,7 +19,7 @@ HELP_TEXT = (
     "1. Define your problem, customer, and hypothesis.\n"
     "2. (Optional) Generate a realistic persona.\n"
     "3. Click **Start interview** and ask questions in the chat.\n"
-    "4. Click 'End & Analyze' to get feedback."
+    "4. Click **End & Analyze** to get feedback."
 )
 
 # ======================================================================================
