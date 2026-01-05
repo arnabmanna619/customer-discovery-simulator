@@ -342,12 +342,9 @@ if not st.session_state.interview_active:
             except Exception as exc:
                 st.error(f"Error: {exc}")
 
-    # Track whether the user explicitly opts into the generated persona (logic preserved; original code defaulted to using persona if generated)
     use_generated_persona = False
-
     if st.session_state.generated_persona:
         st.success("**Generated Persona**\n\n" + st.session_state.generated_persona)
-
         persona_choice = st.radio(
             "Which persona context do you want to use for the Interview?",
             ["Use Generated Persona", "Use Inputted Customer Segment"],
@@ -393,10 +390,7 @@ if not st.session_state.interview_active:
 if st.session_state.interview_active and not st.session_state.analysis_done:
     st.write("#### 💬 Interview in Progress")
 
-    avatar_map = {
-        "user": "🧑‍🎓",
-        "assistant": "👤",
-    }
+    avatar_map = {"user": "🧑‍🎓", "assistant": "👤"}
 
     # Display chat history (excluding system prompt)
     for message in st.session_state.messages:
