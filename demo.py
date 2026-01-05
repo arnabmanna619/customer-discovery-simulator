@@ -4,7 +4,7 @@ from openai import OpenAI
 # ======================================================================================
 # PAGE CONFIGURATION
 # ======================================================================================
-st.set_page_config(page_title="Customer Discovery Simulator", page_icon="🕵️", layout="wide")
+st.set_page_config(page_title="Interview Lab: Customer Discovery", page_icon="🕵️", layout="wide")
 
 # ======================================================================================
 # CONSTANTS
@@ -15,11 +15,11 @@ DEFAULT_GEMINI_MODEL = "gemini-3-flash-preview"
 GEMINI_OPENAI_COMPAT_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
 
 HELP_TEXT = (
-    "**Instructions:**\n"
-    "1. Fill in your hypothesis details.\n"
-    "2. (Optional) Generate a specific persona.\n"
-    "3. Click 'Start Interview' to chat with the AI.\n"
-    "4. Click 'End & Analyze' to get graded."
+    "**How to Use:**\n"
+    "1. Define your problem, customer, and hypothesis.\n"
+    "2. (Optional) Generate a realistic persona.\n"
+    "3. Click **Start interview** and ask questions in the chat.\\n"
+    "4. Click 'End & Analyze' to get feedback."
 )
 
 # ======================================================================================
@@ -96,12 +96,12 @@ def get_provider_config(provider: str):
 
     elif provider == "Gemini":
         api_key = st.text_input("Gemini API Key", type="password")
-        st.link_button("Get Gemini API key", "https://ai.google.dev/gemini-api/docs/api-key", icon=":material/open_in_new:")
+        st.link_button("Get a Gemini API key", "https://ai.google.dev/gemini-api/docs/api-key", icon=":material/open_in_new:")
         base_url = GEMINI_OPENAI_COMPAT_BASE_URL
         model_name = DEFAULT_GEMINI_MODEL
 
     else:  # Gemini (Test)
-        st.success("Using a Free Test Key. This has limits.")
+        st.success("Using a classroom demo key (rate-limited).")
         api_key = st.secrets.get("GEMINI_TEST_API_KEY", "")
         base_url = GEMINI_OPENAI_COMPAT_BASE_URL
         model_name = DEFAULT_GEMINI_MODEL
@@ -272,20 +272,20 @@ def transcript_from_messages(messages: list[dict]) -> str:
 # SIDEBAR: CONFIGURATION
 # ======================================================================================
 with st.sidebar:
-    st.header("⚙️ Configuration")
+    st.header("⚙️ Setup")
 
-    selected_provider = st.selectbox("Select LLM Provider", PROVIDERS)
+    selected_provider = st.selectbox("Choose an AI provider", PROVIDERS)
     api_key, base_url, model_name = get_provider_config(selected_provider)
 
     st.info(HELP_TEXT)
 
-    if st.button("New Simulation", icon=":material/playlist_add:", type="secondary"):
+    if st.button("Start New Simulation", icon=":material/playlist_add:", type="secondary"):
         reset_simulation()
 
 # ======================================================================================
 # MAIN PAGE: HEADER
 # ======================================================================================
-st.title("🕵️ Customer Discovery Simulator")
+st.title("🕵️ Interview Lab: Customer Discovery")
 st.markdown("Sharpen your customer discovery skills before talking to real customers.")
 
 # ======================================================================================
@@ -298,7 +298,7 @@ if not st.session_state.interview_active:
         problem_statement = st.text_area(
             "Problem Statement",
             placeholder="e.g., College students spend too much money buying formal wear for one-time events.",
-            value="College students spend too much money buying formal wear for one-time events.",
+            # value="College students spend too much money buying formal wear for one-time events.",
             height=100,
         )
 
@@ -306,14 +306,14 @@ if not st.session_state.interview_active:
         customer_segment = st.text_area(
             "Customer Segment",
             placeholder="e.g., A Sophomore at UPenn who attends 3-4 formals a year but is on a tight budget.",
-            value="A Sophomore at UPenn who attends 3-4 formals a year but is on a tight budget.",
+            # value="A Sophomore at UPenn who attends 3-4 formals a year but is on a tight budget.",
             height=100,
         )
 
     hypothesis_to_validate = st.text_input(
         "Hypothesis to Validate",
         placeholder="e.g., Students are willing to rent dresses from peers rather than buy new ones.",
-        value="Students are willing to rent dresses from peers rather than buy new ones.",
+        # value="Students are willing to rent dresses from peers rather than buy new ones.",
     )
 
     # ----------------------------------------------------------------------------------
@@ -323,7 +323,7 @@ if not st.session_state.interview_active:
     st.subheader("👤 Persona Builder (Optional)")
     st.markdown("Need help making your customer segment realistic? Generate a backstory first.")
 
-    if st.button("✨ Generate Persona Backstory"):
+    if st.button("✨ Generate Persona"):
         if not api_key:
             st.error("Please enter your LLM API Key in the sidebar first.")
         elif not problem_statement or not customer_segment:
@@ -349,7 +349,7 @@ if not st.session_state.interview_active:
         st.success("**Generated Persona**\n\n" + st.session_state.generated_persona)
 
         persona_choice = st.radio(
-            "Which persona context do you want to use?",
+            "Which persona context do you want to use for the Interview?",
             ["Use Generated Persona", "Use Inputted Customer Segment"],
             index=0,
             horizontal=True,
@@ -391,7 +391,7 @@ if not st.session_state.interview_active:
 # SECTION 2: INTERVIEW INTERFACE
 # ======================================================================================
 if st.session_state.interview_active and not st.session_state.analysis_done:
-    st.write("#### 💬 Customer Interview in Progress")
+    st.write("#### 💬 Interview in Progress")
 
     avatar_map = {
         "user": "🧑‍🎓",
