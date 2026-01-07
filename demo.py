@@ -90,13 +90,13 @@ def get_provider_config(provider: str):
 
     if provider == "OpenAI":
         api_key = st.text_input("OpenAI API Key", type="password")
-        st.link_button("Get an OpenAI API key", "https://platform.openai.com/docs/quickstart", icon=":material/open_in_new:")
+        st.link_button("Get an OpenAI API key", "https://platform.openai.com/docs/quickstart", icon=":material/open_in_new:", type="tertiary")
         base_url = None
         model_name = DEFAULT_OPENAI_MODEL
 
     elif provider == "Gemini":
         api_key = st.text_input("Gemini API Key", type="password")
-        st.link_button("Get a Gemini API key", "https://ai.google.dev/gemini-api/docs/api-key", icon=":material/open_in_new:")
+        st.link_button("Get a Gemini API key", "https://ai.google.dev/gemini-api/docs/api-key", icon=":material/open_in_new:", type="tertiary")
         base_url = GEMINI_OPENAI_COMPAT_BASE_URL
         model_name = DEFAULT_GEMINI_MODEL
 
@@ -277,50 +277,119 @@ with st.sidebar:
     selected_provider = st.selectbox("Choose an AI provider", PROVIDERS)
     api_key, base_url, model_name = get_provider_config(selected_provider)
 
+    st.text("")
     st.info(HELP_TEXT)
 
     if st.button("Start New Simulation", icon=":material/playlist_add:", type="secondary"):
         reset_simulation()
 
+
 # ======================================================================================
 # MAIN PAGE: HEADER
 # ======================================================================================
-st.title("🕵️ Interview Lab: Customer Discovery")
-st.markdown("Sharpen your customer discovery skills before talking to real customers.")
+
+# st.logo("Wharton_logo.svg")
+
+# CUSTOM CSS TO REMOVE IMAGE BORDER RADIUS
+st.markdown(
+    """
+    <style>
+        /* 1. Force the main container to go to the top */
+        .block-container {
+            padding-top: 2rem !important; /* Default is usually 6rem+ */
+            padding-bottom: 2rem !important;
+        }
+
+        /* 2. Remove the rounded corners from logos */
+        [data-testid="stImage"] img {
+            border-radius: 0px !important;
+        }
+
+        /* 3. (Optional) Hide the top header decoration line if you want a clean look */
+        header[data-testid="stHeader"] {
+            background-color: transparent;
+        }
+        
+        /* 2. Sidebar Content: Force to top */
+        [data-testid="stSidebarContent"] {
+            padding-top: 0rem !important;
+        }
+
+        /* 3. SIDEBAR HEADER FIX: Remove the default top margin from the "Setup" header */
+        [data-testid="stSidebarContent"] h2 {
+            margin-top: -32px !important;
+            padding-top: 0px !important;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# SETUP LOGOS
+col1, col2, col3 = st.columns([1, 1, 10])
+
+with col1:
+    st.image("Wharton_logo.svg")
+
+with col2:
+    st.image("Photon_logo_full.svg")
+
+
+# SETUP LAB TEXT & CREDITS
+st.markdown(
+    """
+    <div style="margin-top: 0px;">
+        <h6 style="margin-bottom: 0px; padding-bottom: 0px;">Wharton-Photon Startup AI Lab</h6>
+        <p style="font-size: 0.85rem; color: gray; margin-top: 2px;">
+            Created by: Hari Ravi, your dev, J. Daniel Kim (2026)
+        </p>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+st.text("")
 
 # ======================================================================================
 # SECTION 1: INPUTS (only shown before interview starts)
 # ======================================================================================
 if not st.session_state.interview_active:
+    # TITLE & SUBTITLE
+    st.subheader("🕵️ AI-assisted Customer Discovery App")
+    st.markdown("Refine your customer discovery process before talking to real customers")
+
     col_left, col_right = st.columns(2)
 
     with col_left:
-        problem_statement = st.text_area(
-            "Problem Statement",
-            placeholder="e.g., College students spend too much money buying formal wear for one-time events.",
-            # value="College students spend too much money buying formal wear for one-time events.",
+        customer_segment = st.text_area(
+            "Chosen Customer Segment",
+            placeholder="e.g., Dual-working parents living in an middle-upper class, dense city in the East Coast with young children.",
+            height=100,
+        )
+
+        proposed_solution = st.text_area(
+            "Proposed Solution",
+            placeholder="e.g., Online peer-to-peer marketplace where parents can rent (out) used toys.",
             height=100,
         )
 
     with col_right:
-        customer_segment = st.text_area(
-            "Customer Segment",
-            placeholder="e.g., A Sophomore at UPenn who attends 3-4 formals a year but is on a tight budget.",
-            # value="A Sophomore at UPenn who attends 3-4 formals a year but is on a tight budget.",
+        problem_statement = st.text_area(
+            "Problem Statement",
+            placeholder="e.g., Young parents struggle to buy new toys because of the space that they take up.",
             height=100,
         )
-
-    hypothesis_to_validate = st.text_input(
-        "Hypothesis to Validate",
-        placeholder="e.g., Students are willing to rent dresses from peers rather than buy new ones.",
-        # value="Students are willing to rent dresses from peers rather than buy new ones.",
-    )
+    
+        hypothesis_to_validate = st.text_area(
+            "Hypothesis to test",
+            placeholder="Enter your hypothesis",
+            height=100,
+        )
 
     # ----------------------------------------------------------------------------------
     # OPTIONAL: PERSONA BUILDER
     # ----------------------------------------------------------------------------------
-    st.markdown("---")
-    st.subheader("👤 Persona Builder (Optional)")
+    st.text("")
+    st.write("##### 👤 Persona Builder (Optional)")
     st.markdown("Need help making your customer segment realistic? Generate a backstory first.")
 
     if st.button("✨ Generate Persona"):
@@ -354,7 +423,7 @@ if not st.session_state.interview_active:
         if persona_choice == "Use Generated Persona":
             use_generated_persona = True
 
-    st.markdown("---")
+    st.divider()
 
     # ----------------------------------------------------------------------------------
     # START INTERVIEW ACTION
@@ -388,7 +457,7 @@ if not st.session_state.interview_active:
 # SECTION 2: INTERVIEW INTERFACE
 # ======================================================================================
 if st.session_state.interview_active and not st.session_state.analysis_done:
-    st.write("#### 💬 Interview in Progress")
+    st.subheader("💬 Interview in Progress")
 
     avatar_map = {"user": "🧑‍🎓", "assistant": "👤"}
 
@@ -427,7 +496,7 @@ if st.session_state.interview_active and not st.session_state.analysis_done:
 # SECTION 3: ANALYSIS & FEEDBACK
 # ======================================================================================
 if st.session_state.analysis_done:
-    st.subheader("📝 AI Professor's Feedback")
+    st.subheader("📝 AI Prof. Danny's feedback")
 
     transcript = transcript_from_messages(st.session_state.messages)
     coach_prompt = build_coach_prompt(
@@ -450,15 +519,27 @@ if st.session_state.analysis_done:
                 feedback_markdown = st.write_stream(escape_dollars(stream))
                 st.session_state.feedback_text = feedback_markdown
 
-                if st.session_state.feedback_text:
-                    st.download_button(
-                        "Download Feedback",
-                        data=st.session_state.feedback_text,
-                        file_name="interview_feedback.txt",
-                        icon=":material/download:",
-                    )
             except Exception as exc:
                 st.error(f"Error analyzing: {exc}")
+
+    if st.session_state.feedback_text:
+        
+        full_download_content = (
+            "INTERVIEW TRANSCRIPT\n"
+            "====================\n\n"
+            f"{transcript}\n\n"
+            "--------------------------------------------------\n"
+            "AI COACH FEEDBACK\n"
+            "--------------------------------------------------\n\n"
+            f"{st.session_state.feedback_text}"
+        )
+
+        st.download_button(
+            "Download Feedback & Transcript",
+            data=full_download_content,
+            file_name="interview_and_feedback.txt",
+            icon=":material/download:",
+        )
 
     if st.button("Start New Simulation", icon=":material/playlist_add:", type="primary"):
         reset_simulation()
