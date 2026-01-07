@@ -53,8 +53,6 @@ Customer discovery is a skill—and most people practice it for the first time o
    - Missed opportunities (workarounds, budget, frequency)
    - Score + actionable advice
 
-
-
 ## Quickstart (run locally)
 
 ### 1) Install
@@ -65,12 +63,8 @@ pip install -r requirements.txt
 ### 2) Run
 
 ```bash
-streamlit run app.py
+streamlit run demo.py
 ```
-
-> If your main file is not `app.py`, update the command accordingly.
-
-
 
 ## Configuration
 
@@ -91,15 +85,11 @@ GEMINI_TEST_API_KEY = "YOUR_KEY_HERE"
 
 This is useful for a shared, rate-limited classroom key without distributing it in code.
 
-
-
 ## Providers & models
 
 - **OpenAI** (default model configured in code)
 - **Gemini** via OpenAI-compatible endpoint  
   - Base URL: `https://generativelanguage.googleapis.com/v1beta/openai/`
-
-
 
 ## Deployment
 
@@ -112,8 +102,6 @@ This app is deployed on **Streamlit Community Cloud**.
 - This is a **practice / rehearsal tool** for learning customer discovery technique—not a substitute for real interviews.
 - AI personas can be inconsistent or wrong. Treat outputs as **training feedback**, not ground truth.
 - Avoid entering sensitive, private, or regulated real-customer data into the app.
-
-
 
 ## Credits
 
