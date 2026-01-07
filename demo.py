@@ -341,7 +341,7 @@ st.markdown(
     <div style="margin-top: 0px;">
         <h6 style="margin-bottom: 0px; padding-bottom: 0px;">Wharton-Photon Startup AI Lab</h6>
         <p style="font-size: 0.85rem; color: gray; margin-top: 2px;">
-            Created by: Hari Ravi, your dev, J. Daniel Kim (2026)
+            Created by: Arnab Manna, Hari Ravi, J. Daniel Kim (2026)
         </p>
     </div>
     """,
