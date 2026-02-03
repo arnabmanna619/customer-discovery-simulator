@@ -17,7 +17,7 @@ GEMINI_OPENAI_COMPAT_BASE_URL = "https://generativelanguage.googleapis.com/v1bet
 HELP_TEXT = (
     "**How to Use:**\n"
     "1. Define your problem, customer, and hypothesis.\n"
-    "2. (Optional) Generate a realistic persona.\n"
+    "2. Generate a realistic persona.\n"
     "3. Click **Start interview** and ask questions in the chat.\n"
     "4. Click **End & Analyze** to get feedback."
 )
@@ -184,16 +184,16 @@ def build_persona_prompt(customer_segment: str, problem_statement: str) -> str:
     - The Potential Pain Point: "{problem_statement}"
 
     TASK:
-    Generate a concise but specific user persona (approx. 4-5 sentences) that fits this segment.
+    Generate a very concise but specific user persona (1 sentence) that fits this segment. Output the persona immediately without any preamble.
     
-    THE PERSONA MUST INCLUDE:
-    1. **Demographics & Role:** Specific Name, Age, Job/Major, and Context (e.g., "Junior at UPenn living off-campus").
-    2. **Current Reality (The Status Quo):** How do they handle this problem *right now*? (Do they use a competitor? Do they use a messy spreadsheet? Do they just ignore it?).
-    3. **Friction Level:** Is this actually a hair-on-fire problem for them, or just a minor annoyance? (Be realistic—most problems are just annoyances).
-    4. **Constraints:** Mention one specific constraint (e.g., "Strict budget," "No free time," or "Not tech-savvy").
+    PERSONA RULES:
+    1. **Only have Demographics & Role:** Specific Name, Age, Job/Major, and Location. 
+    2. **No Spoilers:** DO NOT mention their specific frustrations, specific habits regarding the problem, or their opinions.
 
-    OUTPUT STYLE:
-    Write this as a biographical summary. Do not use bullet points. Make it feel like a real person introduction.
+    OUTPUT EXAMPLES
+    (e.g., “Maya Patel, 20, is a sophomore at NYU studying Computer Science and living with two roommates in Manhattan.”, 
+        “Brooke Smith, 32, is a freelance graphic designer in London working with small business clients.”,
+        “Marcus Johnson, 33, is a dual-income parent in Jersey City working in consulting and raising a toddler.”).
     """
 
 
@@ -212,6 +212,7 @@ def build_coach_prompt(transcript: str, original_hypothesis: str, problem_statem
     - **No Fluff:** Do not write like a blog post or an article. Do not use phrases like "The user asked..." -> say "You asked...".
     - **Authoritative:** You are the expert. Be firm about their mistakes.
     - **Mentorship:** Your goal is to help them fix their behavior for the next real interview.
+    - **Brevity:** Don't be too verbose in the Output. Be concise and to the point but don't miss out any feedback. Do not compromise quality for brevity.
 
     INPUTS:
     - Student's Intended Hypothesis: "{original_hypothesis}"
@@ -223,7 +224,7 @@ def build_coach_prompt(transcript: str, original_hypothesis: str, problem_statem
     ---
 
     YOUR TASK:
-    Provide your grading feedback in Markdown. Start directly with the first section header.
+    Provide your grading feedback in Markdown. Don't be too verbose in each section, be brief and to the point, but do not miss anything. Start directly with the first section header.
 
     #### Question Critique
     Look closely at the specific questions you asked.
@@ -247,13 +248,14 @@ def build_coach_prompt(transcript: str, original_hypothesis: str, problem_statem
     #### Your Grade
     **Score: _/10**
     
-    Based on the technique analysis above, assign a score out of 10.
-    - **9-10 (Distinction):** Flawless. Purely behavioral/past-tense questions. Deep insights uncovered. (Rare)
-    - **7-8 (Good):** Mostly open-ended. Maybe 1 leading question or minor pitch.
-    - **5-6 (Average):** Fell into "Pitching mode." Asked hypothetical "Would you use this?" questions. The data is shaky.
-    - **0-4 (Poor):** Treated it like a sales call. Ignored the customer's negativity. Biased the witness.
-    
-    *Provide a 1-2 sentence justification why you gave this score.*
+    Based on the technique analysis above, assign a score out of 10 (use 0.25 increments, e.g., 7.25). Use the following rubric:
+    - **9–10 (Distinction):** Flawless. Almost entirely behavioral/past-tense questions. Deep, specific insights uncovered. Minimal/no pitching. (Rare)
+    - **7–8 (Good):** Mostly open-ended and grounded in past behavior. Maybe 1–2 minor leading/hypothetical questions, but you recover quickly and still get real evidence.
+    - **5–6 (Average):** Mixed quality. Several leading or hypothetical “Would you use this?” questions OR a noticeable drift into pitching. Some useful data, but validity is shaky.
+    - **3–4 (Poor):** Interview is dominated by leading questions and hypotheticals. Clear “pitching mode” for meaningful stretches. Customer responses are mostly vague/polite, not evidence.
+    - **0–2 (Unacceptable):** Essentially a sales call. Heavy pitching, biased framing, ignores/overrides negativity, or fails to elicit any past behavior. Data is unusable. Went completely off topic.
+
+    *Provide a 1–2 sentence justification for why you gave this score.*
 
     #### Final Advice
     Write a concluding advice (2-3 sentences or bullet points) for their next interview:
