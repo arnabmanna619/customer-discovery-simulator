@@ -391,8 +391,8 @@ if not st.session_state.interview_active:
     # OPTIONAL: PERSONA BUILDER
     # ----------------------------------------------------------------------------------
     st.text("")
-    st.write("##### 👤 Persona Builder (Optional)")
-    st.markdown("Need help making your customer segment realistic? Generate a backstory first.")
+    st.write("##### 👤 Persona Builder")
+    st.markdown("Generate a persona first to begin the interview.")
 
     if st.button("✨ Generate Persona"):
         if not api_key:
